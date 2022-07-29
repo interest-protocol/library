@@ -25,7 +25,10 @@ library SafeERC20 {
             // Returns 1 if successful
             if iszero(call(gas(), to, amount, 0x00, 0x00, 0x00, 0x00)) {
                 // Save function identifier on the first 4 bytes in slot 0x00
-                mstore(0x00, 0x3022f2e4000000000000000000000000)
+                mstore(
+                    0x00,
+                    0x3022f2e400000000000000000000000000000000000000000000000000000000
+                )
                 // Grab the first 4 bytes and revert
                 revert(0x00, 0x04)
             }
@@ -49,7 +52,10 @@ library SafeERC20 {
             // We will override the free memory pointer but we will restore it later
 
             // transfer(address,uint256) first 4 bytes 0x23b872dd
-            mstore(0x00, 0xa9059cbb000000000000000000000000)
+            mstore(
+                0x00,
+                0xa9059cbb00000000000000000000000000000000000000000000000000000000
+            )
             mstore(0x04, to) // save address after first 4 bytes
             mstore(0x24, amount) // save amount after 36 bytes
 
@@ -63,8 +69,11 @@ library SafeERC20 {
                     call(gas(), token, 0, 0x00, 0x44, 0x00, 0x20)
                 )
             ) {
-                // Save function identifier for {TransferFromFailed()}
-                mstore(0x00, 0x90b8ec18000000000000000000000000)
+                // Save function identifier for {TransferFailed()}
+                mstore(
+                    0x00,
+                    0x90b8ec1800000000000000000000000000000000000000000000000000000000
+                )
                 // Select first 4 bytes and return
                 revert(0x00, 0x04)
             }
@@ -88,7 +97,10 @@ library SafeERC20 {
             // We will override the zero slot and free memory pointer BUT we will restore it after
 
             // transferFrom(address,address,uint256) first 4 bytes 0x23b872dd
-            mstore(0x00, 0x23b872dd000000000000000000000000)
+            mstore(
+                0x00,
+                0x23b872dd00000000000000000000000000000000000000000000000000000000
+            )
             mstore(0x04, from) // save address after first 4 bytes
             mstore(0x24, to) // save address after 36 bytes
             mstore(0x44, amount) // save amount after 68 bytes
@@ -104,14 +116,20 @@ library SafeERC20 {
                 )
             ) {
                 // Save function identifier for {TransferFromFailed()}
-                mstore(0x00, 0x7939f424000000000000000000000000)
+                mstore(
+                    0x00,
+                    0x7939f42400000000000000000000000000000000000000000000000000000000
+                )
                 // Select first 4 bytes and return
                 revert(0x00, 0x04)
             }
 
             // Clean up memory
             mstore(0x40, freeMemoryPointer) // restore the free memory pointer
-            mstore(0x60, 0x00) // restore the slot zero
+            mstore(
+                0x60,
+                0x0000000000000000000000000000000000000000000000000000000000000000
+            ) // restore the slot zero
         }
     }
 
@@ -127,8 +145,11 @@ library SafeERC20 {
             // Save the arguments in memory to pass to {call} later
             // We will override the free memory pointer but we will restore it later
 
-            // approve(address,uint256) first 4 bytes 0x23b872dd
-            mstore(0x00, 0xa095ea7b3000000000000000000000000)
+            // approve(address,uint256) first 4 bytes 0xa095ea7b3
+            mstore(
+                0x00,
+                0x095ea7b300000000000000000000000000000000000000000000000000000000
+            )
             mstore(0x04, to) // save address after first 4 bytes
             mstore(0x24, amount) // save amount after 36 bytes
 
@@ -142,8 +163,11 @@ library SafeERC20 {
                     call(gas(), token, 0, 0x00, 0x44, 0x00, 0x20)
                 )
             ) {
-                // Save function identifier for {TransferFromFailed()}
-                mstore(0x00, 0x3e3f8f73000000000000000000000000)
+                // Save function identifier for {ApproveFailed()}
+                mstore(
+                    0x00,
+                    0x3e3f8f7300000000000000000000000000000000000000000000000000000000
+                )
                 // Select first 4 bytes and return
                 revert(0x00, 0x04)
             }

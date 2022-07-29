@@ -47,32 +47,11 @@ library Math {
     function adjust(uint256 amount, uint8 decimals)
         internal
         pure
-        returns (uint256 z)
+        returns (uint256)
     {
-        assembly {
-            let divisor := exp(10, decimals)
-            let isEqual := eq(decimals, SCALAR)
+        if (decimals == 18) return amount;
 
-            if isEqual {
-                z := amount
-            }
-
-            if iszero(isEqual) {
-                if or(
-                    iszero(divisor),
-                    iszero(
-                        or(
-                            iszero(amount),
-                            eq(div(mul(amount, SCALAR), amount), SCALAR)
-                        )
-                    )
-                ) {
-                    revert(0, 0)
-                }
-
-                z := div(mul(amount, SCALAR), divisor)
-            }
-        }
+        return mulDiv(amount, SCALAR, 10**decimals);
     }
 
     function uAdd(uint256 x, uint256 y) internal pure returns (uint256 z) {
@@ -244,5 +223,9 @@ library Math {
         r = (r + x / r) >> 1; // Seven iterations should be enough
         uint256 r1 = x / r;
         return (r < r1 ? r : r1);
+    }
+
+    function min(uint256 x, uint256 y) internal pure returns (uint256) {
+        return x > y ? y : x;
     }
 }
