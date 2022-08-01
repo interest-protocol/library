@@ -1,14 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+/**
+ * @title Set of utility functions to perform mathematical operations.
+ */
 library Math {
-    // Common scalar for ERC20 and native assets
+    /// @notice The decimal houses of most ERC20 tokens and native tokens.
     uint256 private constant SCALAR = 1e18;
 
     /**
-     * @notice Taken from https://twitter.com/transmissions11/status/1451129626432978944/photo/1
+     * @notice It multiplies two fixed point numbers.
+     * @dev It assumes the arguments are fixed point numbers with 18 decimal houses. It reverts if the result overflows 2**256-1. Source: https://twitter.com/transmissions11/status/1451129626432978944/photo/1
+     * @param x First operand
+     * @param y The second operand
+     * @return z The result of multiplying x and y
      */
     function fmul(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        /// We use assembly to optimize gas consumption.
         assembly {
             if iszero(or(iszero(x), eq(div(mul(x, y), x), y))) {
                 revert(0, 0)
@@ -19,13 +27,14 @@ library Math {
     }
 
     /**
-     * @notice fixed point math division with a scaling factor of 1/e18
-     *
-     * @param x first operand of the division
-     * @param y second operand of the division
-     * @return z The result of the division with a scaling factor of 1/1e18
+     * @notice It divides two fixed point numbers.
+     * @dev It assumes the arguments are fixed point numbers with 18 decimal houses. It reverts if the result overflows 2**256-1. It does not guard against underflows because the EVM div opcode cannot underflow. Source: https://twitter.com/transmissions11/status/1451129626432978944/photo/1
+     * @param x First operand
+     * @param y The second operand
+     * @return z The result of multiplying x and y
      */
     function fdiv(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        /// We use assembly to optimize gas consumption.
         assembly {
             if or(
                 iszero(y),
@@ -38,42 +47,50 @@ library Math {
     }
 
     /**
-     * @notice It scales the `amount` to a fixed point number with a scaling factor of 1/1e18
-     *
-     * @param amount The number that will be scaled to {WAD}
-     * @param decimals The current exponential of the scaling factor of a base of 10
-     * @return z The new `amount` scaled to a {WAD}
+     * @notice It returns a version of the first argument with 18 decimals.
+     * @dev This function protects against shadow integer overflow.
+     * @param x Number that will be manipulated to have 18 decimals.
+     * @param decimals The current decimal houses of the first argument
+     * @return z A version of the first argument with 18 decimals.
      */
-    function adjust(uint256 amount, uint8 decimals)
-        internal
-        pure
-        returns (uint256)
-    {
-        if (decimals == 18) return amount;
-
-        return mulDiv(amount, SCALAR, 10**decimals);
+    function adjust(uint256 x, uint8 decimals) internal pure returns (uint256) {
+        /// If the number has 18 decimals, we do not need to do anything.
+        /// Since {mulDiv} protects against shadow overflow, we can first add 18 decimal houses and then remove the current decimal houses.
+        return decimals == 18 ? x : mulDiv(x, SCALAR, 10**decimals);
     }
 
+    /**
+     * @notice It adds two numbers.
+     * @dev This function has no protection against integer overflow to optimize gas consumption. It must only be used when we are 100% certain it will not overflow. E.g., to calculate the number of blocks elapsed.
+     * @param x First operand.
+     * @param y The second operand.
+     * @return z The result of adding x and y.
+     */
     function uAdd(uint256 x, uint256 y) internal pure returns (uint256 z) {
         assembly {
             z := add(x, y)
         }
     }
 
+    /**
+     * @notice It subtracts two numbers.
+     * @dev This function has no protection against integer underflow to optimize gas consumption. It must only be used when we are 100% certain it will not underflow. E.g., to calculate the number of blocks elapsed.
+     * @param x First operand.
+     * @param y The second operand.
+     * @return z The result of adding x and y.
+     */
     function uSub(uint256 x, uint256 y) internal pure returns (uint256 z) {
         assembly {
             z := sub(x, y)
         }
     }
 
-    //solhint-disable
     /// @notice Calculates floor(a×b÷denominator) with full precision. Throws if result overflows a uint256 or denominator == 0
     /// @param a The multiplicand
     /// @param b The multiplier
     /// @param denominator The divisor
     /// @return result The 256-bit result
     /// @dev Credit to Remco Bloemen under MIT license https://xn--2-umb.com/21/muldiv
-
     function mulDiv(
         uint256 a,
         uint256 b,
@@ -177,9 +194,10 @@ library Math {
     }
 
     /**
-     * @dev Fast square root function.
-     * Implementation from: https://github.com/Uniswap/uniswap-lib/commit/99f3f28770640ba1bb1ff460ac7c5292fb8291a0
-     * Original implementation: https://github.com/abdk-consulting/abdk-libraries-solidity/blob/master/ABDKMath64x64.sol#L687
+     * @notice This function finds the square root of a number.
+     * @dev It was taken from https://github.com/transmissions11/solmate/blob/main/src/utils/FixedPointMathLib.sol.
+     * @param x This function will find the square root of this number.
+     * @return The square root of x.
      */
     function sqrt(uint256 x) internal pure returns (uint256) {
         if (x == 0) return 0;
@@ -225,6 +243,12 @@ library Math {
         return (r < r1 ? r : r1);
     }
 
+    /**
+     * @notice It returns the smaller number between the two arguments.
+     * @param x Any uint256 number.
+     * @param y Any uint256 number.
+     * @return It returns whichever is smaller between x and y.
+     */
     function min(uint256 x, uint256 y) internal pure returns (uint256) {
         return x > y ? y : x;
     }
