@@ -19,7 +19,7 @@ library SafeERC20 {
     function safeTransferNativeToken(address to, uint256 amount) internal {
         assembly {
             /// Pass no calldata only value in wei
-            /// Save the return on slot 0x00 (scratch space)
+            /// We do not save any data in memory.
             /// Returns 1, if successful
             if iszero(call(gas(), to, amount, 0x00, 0x00, 0x00, 0x00)) {
                 // Save the function identifier in slot 0x00
