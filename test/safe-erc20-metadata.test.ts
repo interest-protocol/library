@@ -36,7 +36,6 @@ describe('SafeTransferERC20Metadata', function () {
 
   it('returns the token decimals', async () => {
     const { sut, token } = await loadFixture(deployFixture);
-    console.log(await token.decimals());
     expect(await sut.decimals(token.address)).to.be.equal(
       await token.decimals()
     );
