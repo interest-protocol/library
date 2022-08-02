@@ -4,8 +4,7 @@ import { ethers } from 'hardhat';
 
 import { multiDeploy } from './utils';
 
-import { TestSafeERC20Metadata } from '../typechain-types';
-import { MintableERC20 } from '../typechain-types/contracts/test/MintableERC20';
+import { TestSafeERC20Metadata, MintableERC20 } from '../typechain-types';
 
 async function deployFixture() {
   const [owner] = await ethers.getSigners();
