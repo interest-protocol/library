@@ -16,7 +16,7 @@ async function deployFixture() {
   return { math };
 }
 
-describe('Math', function () {
+describe('MathLib', function () {
   describe('function: fmul', function () {
     it('reverts if it overflows', async () => {
       const { math } = await loadFixture(deployFixture);

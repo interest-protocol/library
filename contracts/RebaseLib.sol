@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./SafeCast.sol";
-import "./Math.sol";
+import "./SafeCastLib.sol";
+import "./MathLib.sol";
 
 /// @dev The elastic represents an arbitrary amount, while the base is the shares of said amount. We save the base and elastic as uint128 instead of uint256 to optimize gas consumption by storing them in one storage slot. A maximum number of 2**128-1 should be enough to cover most of the use cases.
 struct Rebase {
@@ -14,9 +14,9 @@ struct Rebase {
  * @title A set of functions to manage the change in numbers of tokens and to properly represent them in shares.
  * @dev This library provides a collection of functions to manipulate the base and elastic values saved in a Rebase struct. In a pool context, the percentage of tokens a user owns. The elastic value represents the current number of pool tokens after incurring losses or profits. The functions in this library will revert if the base or elastic goes over 2**1281. Therefore, it is crucial to keep in mind the upper bound limit number this library supports.
  */
-library RebaseLibrary {
-    using SafeCast for uint256;
-    using Math for uint256;
+library RebaseLib {
+    using SafeCastLib for uint256;
+    using MathLib for uint256;
 
     /**
      * @dev Calculates a base value from an elastic value using the ratio of a {Rebase} struct.

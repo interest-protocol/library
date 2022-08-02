@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 /**
  * @title Set of utility functions to perform mathematical operations.
  */
-library Math {
+library MathLib {
     /// @notice The decimal houses of most ERC20 tokens and native tokens.
     uint256 private constant SCALAR = 1e18;
 

@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../SafeERC20.sol";
-import "../SafeERC20Errors.sol";
+import "../SafeTransferLib.sol";
+import "../SafeTransferErrors.sol";
 import "./MintableERC20.sol";
 
-contract TestSafeERC20 is SafeERC20Errors {
-    using SafeERC20 for address;
+contract TestSafeTransfer is SafeTransferErrors {
+    using SafeTransferLib for address;
 
     function transfer(
         address token,

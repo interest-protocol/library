@@ -12,7 +12,7 @@ async function deployFixture() {
   return { safeCast };
 }
 
-describe('SafeCast', function () {
+describe('SafeCastLib', function () {
   it('casts a uint256 to uint128', async () => {
     const { safeCast } = await loadFixture(deployFixture);
     expect(await safeCast.toUint128(100)).to.be.equal(100);

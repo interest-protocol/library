@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../Math.sol";
+import "../MathLib.sol";
 
 contract TestMath {
-    using Math for uint256;
+    using MathLib for uint256;
 
     function fmul(uint256 x, uint256 y) external pure returns (uint256 z) {
         z = x.fmul(y);

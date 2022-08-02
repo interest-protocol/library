@@ -12,7 +12,7 @@ async function deployFixture() {
   return { rebase };
 }
 
-describe('Rebase', function () {
+describe('RebaseLib', function () {
   it('function: toBase', async () => {
     const { rebase } = await loadFixture(deployFixture);
 

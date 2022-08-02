@@ -5,7 +5,7 @@ pragma solidity ^0.8.9;
  * @title Set of functions to safely cast uint256 numbers to smaller uint bit numbers.
  * @dev We use solidity to optimize the gas consumption, and the functions will revert without any reason.
  */
-library SafeCast {
+library SafeCastLib {
     /**
      * @notice Casts a uint256 to uint128 for memory optimization.
      *

@@ -8,7 +8,7 @@ import {
   MintableERC20,
   ErrorERC20,
   FalseERC20,
-  TestSafeERC20,
+  TestSafeTransfer,
 } from '../typechain-types';
 
 const { parseEther } = ethers.utils;
@@ -16,9 +16,9 @@ const { parseEther } = ethers.utils;
 async function deployFixture() {
   const [owner, alice] = await ethers.getSigners();
   const [sut, token, errorToken, falseToken] = (await multiDeploy(
-    ['TestSafeERC20', 'MintableERC20', 'ErrorERC20', 'FalseERC20'],
+    ['TestSafeTransfer', 'MintableERC20', 'ErrorERC20', 'FalseERC20'],
     [[], ['M', 'M'], ['M', 'M'], ['M', 'M']]
-  )) as [TestSafeERC20, MintableERC20, ErrorERC20, FalseERC20];
+  )) as [TestSafeTransfer, MintableERC20, ErrorERC20, FalseERC20];
 
   await Promise.all([
     token.mint(sut.address, parseEther('1000')),
@@ -30,7 +30,7 @@ async function deployFixture() {
   return { owner, token, errorToken, falseToken, sut, alice };
 }
 
-describe('SafeERC20', function () {
+describe('SafeTransferLib', function () {
   it('function: transfer', async () => {
     const { sut, errorToken, falseToken, token, owner } = await loadFixture(
       deployFixture

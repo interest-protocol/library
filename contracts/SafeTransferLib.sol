@@ -6,7 +6,7 @@ pragma solidity ^0.8.9;
  * @author Jose Cerqueira <jose@interestprotocol.com>
  * @dev These functions do not check that the recipient has any code, and they will revert with custom errors available in the {SafeERC20Errors}. We also leave dirty bits in the scratch space of the memory 0x00 to 0x3f.
  */
-library SafeERC20 {
+library SafeTransferLib {
     /*//////////////////////////////////////////////////////////////
                           NATIVE TOKEN OPERATIONS
     //////////////////////////////////////////////////////////////*/

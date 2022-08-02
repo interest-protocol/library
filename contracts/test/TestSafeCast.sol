@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../SafeCast.sol";
+import "../SafeCastLib.sol";
 
 contract TestSafeCast {
-    using SafeCast for uint256;
+    using SafeCastLib for uint256;
 
     function toUint128(uint256 x) external pure returns (uint128) {
         return x.toUint128();
