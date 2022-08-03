@@ -3,6 +3,7 @@ pragma solidity ^0.8.9;
 
 import "../SafeTransferLib.sol";
 import "../SafeTransferErrors.sol";
+
 import "./MintableERC20.sol";
 
 contract TestSafeTransfer is SafeTransferErrors {

@@ -18,6 +18,9 @@ library SafeERC20MetadataLib {
         returns (string memory symbol)
     {
         assembly {
+            /// Save the free memory pointer in memory.
+            symbol := mload(0x40)
+
             // Save the function selector for symbol() on slot 0x00.
             mstore(
                 0x00,
@@ -26,29 +29,28 @@ library SafeERC20MetadataLib {
 
             /// We do not save the returned data in memory because it contains unnecessary data.
             /// {staticcall} will return the length of the data, length of the string, and the string.
-            pop(staticcall(gas(), token, 0x00, 0x04, 0x00, 0x00))
+            /// We save the data on the free memory slot.
+            pop(staticcall(gas(), token, 0x00, 0x04, symbol, 0x60))
 
             /// If {staticcall} returned no data, we will assign the symbol to "???".
             /// The symbol function is not part of the {ERC20} specification.
-            switch returndatasize()
-            case 0 {
-                /// Store the length of "???" in slot 0x00.
-                mstore(0x00, 0x03)
-                /// Store the string "???" in  HEX using ASCII encoding in slot 0x20.
+            if iszero(returndatasize()) {
+                /// Store the length of "???" in slot free memory slot + 0x20.
+                mstore(add(symbol, 0x20), 0x03)
+                /// Store the string "???" in  HEX using ASCII encoding in slot free memory slot + 0x40.
+                /// Free memory slot === data length
+                /// Free memory slot + 0x20 === length of the string
+                /// Free memory slot + 0x40 === the string
                 mstore(
-                    0x20,
+                    add(symbol, 0x40),
                     0x3f3f3f0000000000000000000000000000000000000000000000000000000000
                 )
             }
-            default {
-                /// Save the returned data on slot 0x00.
-                /// Discard the first word returned by {staticall} because we know the length of the data is 0x20.
-                /// Store the length of the string followed by the string.
-                returndatacopy(0x00, 0x20, 0x40)
-            }
 
-            /// Assign symbol to length memory slot.
-            symbol := 0x00
+            /// Save on slot 0x40 the new free memory slot.
+            mstore(0x40, add(symbol, 0x60))
+            /// Point symbol to the length of the string, which is the free memory slot + 0x20.
+            symbol := add(symbol, 0x20)
         }
     }
 
@@ -64,23 +66,32 @@ library SafeERC20MetadataLib {
         returns (uint256 decimals)
     {
         assembly {
+            /// Save the free memory pointer in memory.
+            let freeMemoryPoint := mload(0x40)
+
             // Save the function selector for decimals() on slot 0x00.
             mstore(
                 0x00,
                 0x313ce56700000000000000000000000000000000000000000000000000000000
             )
 
-            /// Save the returned data on slot 0x00.
-            pop(staticcall(gas(), token, 0x00, 0x04, 0x00, 0x20))
+            /// Save the returned data on the free memory slot. We are expecting a number, so 0x20 is enough.
+            pop(staticcall(gas(), token, 0x00, 0x04, freeMemoryPoint, 0x20))
 
             /// If {staticcall} returned no data, we assume the token has 18 decimals.
             /// The decimals function is not part of the {ERC20} specification.
+            /// We save 18 to free memory slot.
+
             switch returndatasize()
             case 0 {
-                decimals := 18
+                decimals := 0x12
             }
             default {
-                decimals := mload(0x00)
+                /// Assign decimals to the data saved in the free memory point slot.
+                decimals := mload(freeMemoryPoint)
+
+                /// Update the 0x40 slot to point to the previous free memory slot + 0x20.
+                mstore(0x40, add(freeMemoryPoint, 0x20))
             }
         }
     }
