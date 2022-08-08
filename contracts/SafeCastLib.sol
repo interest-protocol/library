@@ -30,7 +30,7 @@ library SafeCastLib {
      * @param x The uint256 that will be casted to uint112
      * @return y The uint112 version of `x`
      *
-     * @dev It will revert if `x` is higher than 2**128 - 1
+     * @dev It will revert if `x` is higher than 2**112 - 1
      */
     function toUint112(uint256 x) internal pure returns (uint112 y) {
         //solhint-disable-next-line no-inline-assembly
@@ -66,7 +66,7 @@ library SafeCastLib {
      * @param x The uint256 that will be casted to uint64
      * @return y The uint64 version of `x`
      *
-     * @dev It will revert if `x` is higher than 2**96 - 1
+     * @dev It will revert if `x` is higher than 2**64 - 1
      */
     function toUint64(uint256 x) internal pure returns (uint64 y) {
         //solhint-disable-next-line no-inline-assembly
@@ -84,7 +84,7 @@ library SafeCastLib {
      * @param x The uint256 that will be casted to uint32
      * @return y The uint64 version of `x`
      *
-     * @dev It will revert if `x` is higher than 2**96 - 1
+     * @dev It will revert if `x` is higher than 2**32 - 1
      */
     function toUint32(uint256 x) internal pure returns (uint32 y) {
         //solhint-disable-next-line no-inline-assembly
