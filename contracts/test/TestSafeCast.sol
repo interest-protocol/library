@@ -6,6 +6,10 @@ import "../SafeCastLib.sol";
 contract TestSafeCast {
     using SafeCastLib for uint256;
 
+    function toUint224(uint256 x) external pure returns (uint224) {
+        return x.toUint224();
+    }
+
     function toUint128(uint256 x) external pure returns (uint128) {
         return x.toUint128();
     }

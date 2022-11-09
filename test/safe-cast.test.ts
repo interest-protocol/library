@@ -13,6 +13,15 @@ async function deployFixture() {
 }
 
 describe('SafeCastLib', function () {
+  it('casts a uint256 to uint224', async () => {
+    const { safeCast } = await loadFixture(deployFixture);
+    expect(await safeCast.toUint224(100)).to.be.equal(100);
+    expect(
+      await safeCast.toUint224(BigNumber.from(2).pow(224).sub(1))
+    ).to.be.equal(BigNumber.from(2).pow(224).sub(1));
+    await expect(safeCast.toUint224(BigNumber.from(2).pow(224))).to.be.reverted;
+  });
+
   it('casts a uint256 to uint128', async () => {
     const { safeCast } = await loadFixture(deployFixture);
     expect(await safeCast.toUint128(100)).to.be.equal(100);
