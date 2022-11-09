@@ -7,6 +7,24 @@ pragma solidity ^0.8.9;
  */
 library SafeCastLib {
     /**
+     * @notice Casts a uint256 to uint224 for memory optimization.
+     *
+     * @param x The uint256 that will be casted to uint224
+     * @return y The uint224 version of `x`
+     *
+     * @dev It will revert if `x` is higher than 2**224 - 1
+     */
+    function toUint224(uint256 x) internal pure returns (uint224 y) {
+        //solhint-disable-next-line no-inline-assembly
+        assembly {
+            if gt(shr(224, x), 0) {
+                revert(0, 0)
+            }
+            y := x
+        }
+    }
+
+    /**
      * @notice Casts a uint256 to uint128 for memory optimization.
      *
      * @param x The uint256 that will be casted to uint128
